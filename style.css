@@ -1,0 +1,24 @@
+body.dark{
+background:#121212;
+color:white;
+}
+
+.dark .card{
+background:#1e1e1e;
+color:white;
+}
+
+.status-baik{
+color:#28a745;
+font-weight:bold;
+}
+
+.status-normal{
+color:#ffc107;
+font-weight:bold;
+}
+
+.status-boros{
+color:#dc3545;
+font-weight:bold;
+}

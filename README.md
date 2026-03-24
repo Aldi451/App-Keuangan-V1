@@ -55,7 +55,7 @@ Setelah database siap, langkah terakhir adalah menghubungkan frontend dengan Sup
 ```javascript
 // Contoh penyesuaian di script.js
 const SUPABASE_URL = 'https://xxxxx.supabase.co'; // Ganti dengan URL Anda
-const SUPABASE_KEY = 'public-anon-key-xxxxx';     // Ganti dengan API Key Anda
+const SUPABASE_KEY = 'public-anon-key-xxxxx';     // Ganti dengan API Key Anda//
 
 ## 🚀 About Me
 - 🔭 Currently working on: Building responsive web applications

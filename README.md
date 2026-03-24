@@ -44,6 +44,18 @@ Digunakan untuk menyimpan riwayat keuangan.
 > **⚠️ PENTING:** Untuk keperluan pengembangan awal dan agar aplikasi ini dapat langsung diakses oleh script frontend tanpa autentikasi kompleks, pastikan **Row Level Security (RLS) dinonaktifkan (Disable)** pada kedua tabel tersebut.
 >
 > *Catatan: Jika Anda berencana meng-online-kan aplikasi ini untuk umum, sangat disarankan untuk mengaktifkan kembali RLS dan mengatur policy yang sesuai demi keamanan data.*
+> 
+## ⚙️ Konfigurasi Aplikasi
+Setelah database siap, langkah terakhir adalah menghubungkan frontend dengan Supabase Anda.
+
+1. Buka file `script.js` di dalam repositori ini.
+2. Cari bagian konfigurasi Supabase.
+3. Ganti `URL_SUPABASE` dan `API_KEY` dengan milik Anda yang didapatkan dari dashboard Supabase (Settings > API).
+
+```javascript
+// Contoh penyesuaian di script.js
+const SUPABASE_URL = 'https://xxxxx.supabase.co'; // Ganti dengan URL Anda
+const SUPABASE_KEY = 'public-anon-key-xxxxx';     // Ganti dengan API Key Anda
 
 ## 🚀 About Me
 - 🔭 Currently working on: Building responsive web applications
@@ -67,14 +79,3 @@ Digunakan untuk menyimpan riwayat keuangan.
   <a href="https://www.linkedin.com/in/rifaldi-hidayat-19321937b/" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="aldi" height="30" width="40" /></a>
   <a href="mailto:rifaldihidayat282@gmail.com" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/gmail.svg" alt="aldi" height="30" width="40" /></a>
 </p>
-## ⚙️ Konfigurasi Aplikasi
-Setelah database siap, langkah terakhir adalah menghubungkan frontend dengan Supabase Anda.
-
-1. Buka file `script.js` di dalam repositori ini.
-2. Cari bagian konfigurasi Supabase.
-3. Ganti `URL_SUPABASE` dan `API_KEY` dengan milik Anda yang didapatkan dari dashboard Supabase (Settings > API).
-
-```javascript
-// Contoh penyesuaian di script.js
-const SUPABASE_URL = 'https://xxxxx.supabase.co'; // Ganti dengan URL Anda
-const SUPABASE_KEY = 'public-anon-key-xxxxx';     // Ganti dengan API Key Anda

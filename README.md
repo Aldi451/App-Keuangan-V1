@@ -45,10 +45,6 @@ Digunakan untuk menyimpan riwayat keuangan.
 >
 > *Catatan: Jika Anda berencana meng-online-kan aplikasi ini untuk umum, sangat disarankan untuk mengaktifkan kembali RLS dan mengatur policy yang sesuai demi keamanan data.*
 
-# Hi, I'm Aldi451! 👋
-
-Saya seorang **Web Developer** yang berminat mendalami **Software Engineering**.
-
 ## 🚀 About Me
 - 🔭 Currently working on: Building responsive web applications
 - 🌱 Currently learning: Software Engineering Best Practices & Architecture

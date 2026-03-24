@@ -52,10 +52,12 @@ Setelah database siap, langkah terakhir adalah menghubungkan frontend dengan Sup
 2. Cari bagian konfigurasi Supabase.
 3. Ganti `URL_SUPABASE` dan `API_KEY` dengan milik Anda yang didapatkan dari dashboard Supabase (Settings > API).
 
-```javascript
+`javascript
 // Contoh penyesuaian di script.js
 const SUPABASE_URL = 'https://xxxxx.supabase.co'; // Ganti dengan URL Anda
-const SUPABASE_KEY = 'public-anon-key-xxxxx';     // Ganti dengan API Key Anda//
+const SUPABASE_KEY = 'public-anon-key-xxxxx';     // Ganti dengan API Key Anda
+
+
 
 ## 🚀 About Me
 - 🔭 Currently working on: Building responsive web applications
@@ -79,3 +81,5 @@ const SUPABASE_KEY = 'public-anon-key-xxxxx';     // Ganti dengan API Key Anda//
   <a href="https://www.linkedin.com/in/rifaldi-hidayat-19321937b/" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="aldi" height="30" width="40" /></a>
   <a href="mailto:rifaldihidayat282@gmail.com" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/gmail.svg" alt="aldi" height="30" width="40" /></a>
 </p>
+
+

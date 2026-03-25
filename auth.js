@@ -1,5 +1,5 @@
-const supabaseUrl = "You URL";
-const supabaseKey = "You Key";
+const supabaseUrl = "URL_SUPABASE";
+const supabaseKey = "API_KEY";
 
 const supabaseClient=supabase.createClient(supabaseUrl,supabaseKey);
 

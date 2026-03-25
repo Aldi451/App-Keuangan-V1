@@ -50,7 +50,7 @@ Setelah database siap, langkah terakhir adalah menghubungkan frontend dengan Sup
 
 1. Buka file `script.js` di dalam repositori ini.
 2. Cari bagian konfigurasi Supabase.
-3. Ganti `URL_SUPABASE` dan `API_KEY` dengan milik Anda yang didapatkan dari dashboard Supabase (Settings > API).
+3. Ganti `URL_SUPABASE` dan `API_KEY` dengan milik Anda yang didapatkan dari dashboard Supabase (Settings > API), begitu juga dengan file 'auth.js'.
 
 `javascript
 // Contoh penyesuaian di script.js

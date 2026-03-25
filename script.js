@@ -6,8 +6,8 @@ window.location.href="index.html";
 
 }
 
-const supabaseUrl = "https://qtcdtudnzlvrvtyyygwa.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0Y2R0dWRuemx2cnZ0eXl5Z3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMjEzMzAsImV4cCI6MjA4ODc5NzMzMH0.gVHcnBmD06MAMf7kw4QqHZZapuLqZ03Bqh4lFCPCu3k";
+const supabaseUrl = "You URL";
+const supabaseKey = "You Key";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 let chart = null;

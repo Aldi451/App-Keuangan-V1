@@ -1,3 +1,7 @@
+body {
+  background-image: url("BG.jpg");
+}
+
 /* ==================== ROOT VARIABLES ==================== */
 :root {
     --primary-color: #0d6efd;

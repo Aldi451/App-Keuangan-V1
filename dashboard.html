@@ -1,461 +1,405 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Keuangan</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <style>
-    body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-    }
-    
-    .main-container {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      padding: 30px;
-      margin: 30px auto;
-      backdrop-filter: blur(10px);
-    }
-    
-    @media (max-width: 768px) {
-      .main-container {
-        margin: 15px;
-        padding: 20px;
-        border-radius: 15px;
-      }
-    }
-    
-    .page-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-weight: 800;
-    }
-    
-    .balance-card {
-      border: none;
-      border-radius: 15px;
-      transition: all 0.3s ease;
-      overflow: hidden;
-    }
-    
-    .balance-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-    
-    .balance-card h5 {
-      font-size: 0.85rem;
-      opacity: 0.9;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
-    }
-    
-    .balance-card h3 {
-      font-size: 1.4rem;
-      font-weight: 700;
-    }
-    
-    .card-opening { background: linear-gradient(135deg, #434343 0%, #2c3e50 100%); }
-    .card-masuk { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
-    .card-keluar { background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); }
-    .card-ending { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-    .card-total { background: linear-gradient(135deg, #232526 0%, #414345 100%); }
-    
-    .custom-card {
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-      background: white;
-      transition: all 0.3s ease;
-    }
-    
-    .custom-card .card-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 15px 20px;
-      font-weight: 600;
-    }
-    
-    .collapsible-section {
-      transition: all 0.4s ease-out;
-      overflow: hidden;
-    }
-    
-    .collapsible-section.collapsed {
-      max-height: 0;
-      padding: 0 !important;
-      border: none !important;
-      margin: 0 !important;
-      visibility: hidden;
-    }
-    
-    .toggle-btn {
-      cursor: pointer;
-      font-size: 0.85rem;
-      padding: 8px 16px;
-      border-radius: 25px;
-      transition: all 0.3s;
-      border: 2px solid;
-    }
-    
-    .toggle-btn i {
-      transition: transform 0.3s;
-      font-size: 0.75rem;
-    }
-    
-    .toggle-btn.collapsed i {
-      transform: rotate(-90deg);
-    }
-    
-    .form-control, .form-select {
-      border-radius: 10px;
-      border: 2px solid #e8e8e8;
-      padding: 10px 15px;
-    }
-    
-    .form-control:focus, .form-select:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
-    }
-    
-    .btn-custom {
-      border-radius: 10px;
-      padding: 10px 20px;
-      font-weight: 600;
-      transition: all 0.3s;
-      border: none;
-    }
-    
-    .btn-custom:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-    }
-    
-    .btn-primary-custom {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-    
-    .btn-success-custom {
-      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-      color: white;
-    }
-    
-    .category-container { position: relative; }
-    
-    .category-suggestions {
-      position: absolute;
-      top: 100%;
-      left: 0; right: 0;
-      background: white;
-      border: 1px solid #e8e8e8;
-      border-radius: 10px;
-      max-height: 200px;
-      overflow-y: auto;
-      z-index: 1000;
-      display: none;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    }
-    
-    .category-suggestions.show { display: block; }
-    .category-suggestions div {
-      padding: 10px 15px;
-      cursor: pointer;
-    }
-    .category-suggestions div:hover { 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-    .category-suggestions .add-new {
-      border-top: 1px solid #e8e8e8;
-      font-style: italic;
-      color: #667eea;
-    }
-    
-    .currency-input {
-      text-align: right;
-      font-weight: 600;
-    }
-    
-    .table-container { overflow-x: auto; border-radius: 10px; }
-    .table thead th {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      font-weight: 600;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      padding: 12px 15px;
-    }
-    .table tbody tr:hover {
-      background: rgba(102, 126, 234, 0.05);
-    }
-    .table td {
-      font-size: 0.9rem;
-      vertical-align: middle;
-      padding: 12px 15px;
-    }
-    
-    .summary-card {
-      border-left: 5px solid #667eea;
-      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-      border-radius: 15px;
-      transition: all 0.3s;
-    }
-    .summary-card:hover { 
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-    .summary-card.masuk { border-left-color: #38ef7d; }
-    .summary-card.keluar { border-left-color: #f45c43; }
-    
-    .chart-canvas {
-      width: 100% !important;
-      height: 280px !important;
-    }
-    
-    /* Pie chart container - responsive & circular */
-    .pie-chart-container {
-      position: relative;
-      height: 350px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    
-    @media (max-width: 768px) {
-      .pie-chart-container {
-        height: 300px;
-      }
-    }
-    
-    @media (max-width: 576px) {
-      .pie-chart-container {
-        height: 280px;
-      }
-    }
-    
-    .status-baik { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
-    .status-normal { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
-    .status-boros { background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; }
-    .status-kosong { background: linear-gradient(135deg, #434343 0%, #2c3e50 100%); color: white; }
-    
-    .loading { display: none; text-align: center; padding: 30px; }
-    .loading.show { display: block; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Keuangan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-  <div class="main-container">
-    
-    <h2 class="text-center mb-4 page-header">
-      <i class="bi bi-wallet2"></i> Dashboard Keuangan
-    </h2>
-    
-    <!-- Balance Cards -->
-    <div class="row g-3 mb-4">
-      <div class="col-6 col-md-3">
-        <div class="card card-opening text-white p-3 balance-card text-center">
-          <h5 class="mb-1"><i class="bi bi-wallet"></i> Opening Balance</h5>
-          <h3 id="openingBalance" class="mb-0">Rp 0</h3>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="card mb-4">
+            <div class="card-body text-center py-4">
+                <h1 class="fw-bold text-Black mb-2">
+                    <i class="bi bi-wallet2"></i> Dashboard Keuangan
+                </h1>
+                <p class="text-Black-50 mb-0">Kelola keuangan Anda dengan lebih baik</p>
+            </div>
         </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="card card-masuk text-white p-3 balance-card text-center">
-          <h5 class="mb-1"><i class="bi bi-arrow-down-circle"></i> Pemasukan</h5>
-          <h3 id="totalMasuk" class="mb-0">Rp 0</h3>
+
+        <!-- Balance Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="balance-card h-100">
+                    <small><i class="bi bi-wallet"></i> Opening Balance</small>
+                    <h3 id="openingBalance">Rp 0</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="balance-card h-100" style="background: linear-gradient(135deg, #198754 0%, #20c997 100%);">
+                    <small><i class="bi bi-arrow-down-circle"></i> Pemasukan</small>
+                    <h3 id="totalMasuk">Rp 0</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="balance-card h-100" style="background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);">
+                    <small><i class="bi bi-arrow-up-circle"></i> Pengeluaran</small>
+                    <h3 id="totalKeluar">Rp 0</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="balance-card h-100" style="background: linear-gradient(135deg, #0dcaf0 0%, #0d9488 100%);">
+                    <small><i class="bi bi-piggy-bank"></i> Ending Balance</small>
+                    <h3 id="endingBalance">Rp 0</h3>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="card card-keluar text-white p-3 balance-card text-center">
-          <h5 class="mb-1"><i class="bi bi-arrow-up-circle"></i> Pengeluaran</h5>
-          <h3 id="totalKeluar" class="mb-0">Rp 0</h3>
+
+        <!-- Action Buttons & Filter -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex gap-2 flex-wrap mb-3">
+                    <button class="btn btn-primary btn-action" onclick="toggleSection('sectionGrafik', this)">
+                        <i class="bi bi-graph-up"></i> Grafik
+                    </button>
+                    <button class="btn btn-info btn-action" onclick="toggleSection('sectionSummary', this)">
+                        <i class="bi bi-pie-chart"></i> Summary
+                    </button>
+                    <button class="btn btn-success btn-action" onclick="toggleSection('sectionTransaksi', this)">
+                        <i class="bi bi-list-ul"></i> Transaksi
+                    </button>
+                    <button class="btn btn-warning btn-action" onclick="toggleSection('sectionPembanding', this)">
+                        <i class="bi bi-arrows-angle-expand"></i> Pembanding
+                    </button>
+                    <button class="btn btn-secondary btn-action" onclick="exportExcel()">
+                        <i class="bi bi-file-earmark-excel"></i> Export Excel
+                    </button>
+                    <button class="btn btn-dark btn-action" onclick="exportDatabaseBackup()">
+                        <i class="bi bi-database"></i> Backup
+                    </button>
+                    <button class="btn btn-outline-dark btn-action" onclick="document.getElementById('restoreInput').click()">
+                        <i class="bi bi-upload"></i> Restore
+                    </button>
+                    <input type="file" id="restoreInput" hidden accept=".json" onchange="importDatabaseBackup(this)">
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold">📅 Bulan:</label>
+                        <select id="filterBulan" class="form-select" onchange="loadData()">
+                            <option value="">Semua Bulan</option>
+                            <option value="01">Januari</option>
+                            <option value="02">Februari</option>
+                            <option value="03">Maret</option>
+                            <option value="04">April</option>
+                            <option value="05">Mei</option>
+                            <option value="06">Juni</option>
+                            <option value="07">Juli</option>
+                            <option value="08">Agustus</option>
+                            <option value="09">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold">📆 Tahun:</label>
+                        <select id="filterTahun" class="form-select" onchange="loadData()">
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary w-100" onclick="loadData()">
+                            <i class="bi bi-search"></i> Tampilkan
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="card card-ending text-white p-3 balance-card text-center">
-          <h5 class="mb-1"><i class="bi bi-piggy-bank"></i> Ending Balance</h5>
-          <h3 id="endingBalance" class="mb-0">Rp 0</h3>
+
+        <!-- Input Transaksi -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Input Transaksi</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label class="form-label">Tanggal</label>
+                        <input type="date" id="tanggal" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Jenis</label>
+                        <select id="jenis" class="form-select">
+                            <option value="Masuk">Masuk</option>
+                            <option value="Keluar">Keluar</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 category-container">
+                        <label class="form-label">Kategori</label>
+                        <input type="text" id="kategori" class="form-control" list="kategoriList" placeholder="Pilih atau ketik kategori">
+                        <datalist id="kategoriList"></datalist>
+                        <div id="kategoriSuggestions" class="suggestions"></div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Jumlah (Rp)</label>
+                        <input type="text" id="jumlah" class="form-control" placeholder="0">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Keterangan</label>
+                        <input type="text" id="keterangan" class="form-control" placeholder="Opsional">
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                            <i class="bi bi-x-circle"></i> Reset
+                        </button>
+                        <button type="button" id="btnSimpan" class="btn btn-primary" onclick="simpan()">
+                            <i class="bi bi-save"></i> Simpan
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-6 col-md-3 ms-auto">
-        <div class="card card-total text-white p-3 balance-card text-center">
-          <h5 class="mb-1"><i class="bi bi-receipt"></i> Total Transaksi</h5>
-          <h3 id="totalTransaksi" class="mb-0">0</h3>
+
+        <!-- Section Grafik -->
+        <div id="sectionGrafik" class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-graph-up"></i> Grafik Keuangan</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <div class="info-box p-3 rounded bg-success bg-gradient text-white">
+                            <small>Total Pemasukan</small>
+                            <h4 id="infoPemasukan" class="mb-0">Rp 0</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="info-box p-3 rounded bg-danger bg-gradient text-white">
+                            <small>Total Pengeluaran</small>
+                            <h4 id="infoPengeluaran" class="mb-0">Rp 0</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="info-box p-3 rounded bg-success bg-gradient text-white" id="infoSaldo">
+                            <small>Saldo Bersih</small>
+                            <h4 id="infoSaldoValue" class="mb-0">Rp 0</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-3">📊 Pemasukan vs Pengeluaran</h6>
+                        <div class="chart-container">
+                            <canvas id="chartKeuangan"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-3">🥧 Pengeluaran per Kategori</h6>
+                        <div class="chart-container">
+                            <canvas id="chartKategori"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <h6 class="fw-bold mb-3">📈 Trend Saldo Bulanan</h6>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="chartTrend"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="statusBox" class="mt-3 p-3 rounded fw-bold status-kosong">
+                    ⚪ Belum ada transaksi
+                </div>
+            </div>
         </div>
-      </div>
+
+        <!-- Section Summary -->
+        <div id="sectionSummary" class="card mb-4 collapsed">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Summary Category</h5>
+            </div>
+            <div class="card-body">
+                <div id="summaryContainer" class="row g-3">
+                    <div class="col-12 text-center text-muted py-4">
+                        <i class="bi bi-pie-chart" style="font-size: 3rem;"></i>
+                        <p class="mt-2">Klik "Tampilkan" untuk melihat summary</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Pembanding -->
+        <div id="sectionPembanding" class="card mb-4 collapsed">
+            <div class="card-header bg-warning text-dark">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h5 class="mb-0"><i class="bi bi-arrows-angle-expand"></i> Pembanding Keuangan</h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <input type="checkbox" class="btn-check" id="checkBulanan" autocomplete="off" checked onchange="toggleComparisonView()">
+                        <label class="btn btn-outline-warning" for="checkBulanan">📅 Bulanan</label>
+                        <input type="checkbox" class="btn-check" id="checkTahunan" autocomplete="off" onchange="toggleComparisonView()">
+                        <label class="btn btn-outline-warning" for="checkTahunan">📆 Tahunan</label>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">📅 Bulan:</label>
+                        <select id="filterBulanPembanding" class="form-select">
+                            <option value="01">Januari</option>
+                            <option value="02">Februari</option>
+                            <option value="03">Maret</option>
+                            <option value="04">April</option>
+                            <option value="05">Mei</option>
+                            <option value="06">Juni</option>
+                            <option value="07">Juli</option>
+                            <option value="08">Agustus</option>
+                            <option value="09">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">📆 Tahun:</label>
+                        <select id="filterTahunPembanding" class="form-select">
+                            <!-- Will be populated by JS -->
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button class="btn btn-warning w-100" onclick="generateComparison()">
+                            <i class="bi bi-search"></i> Tampilkan Perbandingan
+                        </button>
+                    </div>
+                </div>
+
+                <div id="comparisonContainer">
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-arrows-angle-expand" style="font-size: 3rem;"></i>
+                        <p class="mt-2">Klik "Tampilkan Perbandingan" untuk melihat analisis</p>
+                    </div>
+                </div>
+
+                <div class="mt-4" id="categoryComparisonSection">
+                    <h6 class="fw-bold mb-3">📊 Perbandingan Per Kategori</h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle" style="min-width: 800px;">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="min-width: 150px;">Kategori</th>
+                                    <th class="text-end" style="min-width: 120px;">Bulan Ini</th>
+                                    <th class="text-end" style="min-width: 120px;">Bulan Lalu</th>
+                                    <th class="text-end" style="min-width: 100px;">Selisih</th>
+                                    <th class="text-end" style="min-width: 110px;">%</th>
+                                    <th class="text-center" style="min-width: 130px;">Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoryComparisonBody">
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-3">
+                                        <small>Data kategori akan muncul setelah perbandingan ditampilkan</small>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h6 class="fw-bold mb-3">💡 Rekomendasi Keuangan</h6>
+                    <div id="recommendationContainer" class="alert alert-info">
+                        <small>Rekomendasi akan muncul setelah analisis perbandingan</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Transaksi -->
+        <div id="sectionTransaksi" class="card mb-4">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-list-ul"></i> Daftar Transaksi</h5>
+                <span class="badge bg-light text-dark" id="transactionCount">0 transaksi</span>
+            </div>
+            <div class="card-body">
+                <div class="loading" id="loadingTable">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2">Memuat transaksi...</p>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Jenis</th>
+                                <th>Kategori</th>
+                                <th class="text-end">Jumlah</th>
+                                <th>Keterangan</th>
+                                <th class="text-end">Saldo</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelTransaksi">
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Controls -->
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-      <button class="btn btn-success-custom btn-custom" onclick="exportExcel()">
-        <i class="bi bi-file-earmark-excel"></i> Export Excel
-      </button>
-      <div class="d-flex gap-2 flex-wrap">
-        <button class="btn btn-outline-primary toggle-btn collapsed" onclick="toggleSection('sectionGrafik', this)">
-          <i class="bi bi-chevron-down"></i> Grafik
-        </button>
-        <button class="btn btn-outline-info toggle-btn collapsed" onclick="toggleSection('sectionSummary', this)">
-          <i class="bi bi-chevron-down"></i> Summary
-        </button>
-        <button class="btn btn-outline-secondary toggle-btn" onclick="toggleSection('sectionTransaksi', this)">
-          <i class="bi bi-chevron-down"></i> Transaksi
-        </button>
-      </div>
+    <!-- Progress Modal -->
+    <div class="modal fade" id="progressModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="progressModalTitle">Proses...</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="progressModalMessage">Sedang memproses...</p>
+                    <div class="progress">
+                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <small id="progressDetail" class="text-muted"></small>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Filter Periode -->
-    <div class="custom-card p-3 mb-3">
-      <h5 class="mb-3"><i class="bi bi-funnel"></i> Filter Periode</h5>
-      <div class="row g-2">
-        <div class="col-6 col-md-4">
-          <select id="filterBulan" class="form-control form-control-sm">
-            <option value="">Semua Bulan</option>
-            <option value="01">Januari</option>
-            <option value="02">Februari</option>
-            <option value="03">Maret</option>
-            <option value="04">April</option>
-            <option value="05">Mei</option>
-            <option value="06">Juni</option>
-            <option value="07">Juli</option>
-            <option value="08">Agustus</option>
-            <option value="09">September</option>
-            <option value="10">Oktober</option>
-            <option value="11">November</option>
-            <option value="12">Desember</option>
-          </select>
+    <!-- Confirm Restore Modal -->
+    <div class="modal fade" id="confirmRestoreModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">⚠️ Konfirmasi Restore</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Restore backup akan menambahkan data ke database saat ini.</p>
+                    <ul class="small text-muted">
+                        <li>Data dengan ID sama akan di-skip (tidak ditimpa)</li>
+                        <li>Kategori baru akan otomatis dibuat</li>
+                        <li>Pastikan koneksi internet stabil</li>
+                    </ul>
+                    <hr>
+                    <div class="row g-2">
+                        <div class="col-6"><strong>File backup:</strong></div>
+                        <div class="col-6" id="restoreFileName">-</div>
+                        <div class="col-6"><strong>Tanggal backup:</strong></div>
+                        <div class="col-6" id="restoreFileDate">-</div>
+                        <div class="col-6"><strong>Total transaksi:</strong></div>
+                        <div class="col-6" id="restoreFileCount">-</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-warning" onclick="confirmRestore()">Ya, Restore Sekarang</button>
+                </div>
+            </div>
         </div>
-        <div class="col-6 col-md-4">
-          <input type="number" id="filterTahun" class="form-control form-control-sm" placeholder="Tahun" min="2020" max="2030">
-        </div>
-        <div class="col-12 col-md-4">
-          <button class="btn btn-success-custom btn-sm w-100" onclick="loadData()">
-            <i class="bi bi-search"></i> Tampilkan
-          </button>
-        </div>
-      </div>
     </div>
 
-    <!-- Input Transaksi -->
-    <div class="custom-card p-3 mb-3">
-      <h5 class="mb-3"><i class="bi bi-plus-circle"></i> Input Transaksi</h5>
-      <div class="row g-2">
-        <div class="col-6 col-md-2">
-          <input type="date" id="tanggal" class="form-control form-control-sm">
-        </div>
-        <div class="col-6 col-md-2">
-          <select id="jenis" class="form-control form-control-sm">
-            <option value="Masuk">Masuk</option>
-            <option value="Keluar">Keluar</option>
-          </select>
-        </div>
-        <div class="col-12 col-md-2 category-container">
-          <input type="text" id="kategori" class="form-control form-control-sm" placeholder="Kategori" list="kategoriList" autocomplete="off">
-          <datalist id="kategoriList"></datalist>
-          <div class="category-suggestions" id="kategoriSuggestions"></div>
-        </div>
-        <div class="col-6 col-md-2">
-          <input type="text" id="jumlah" class="form-control form-control-sm currency-input" placeholder="0">
-        </div>
-        <div class="col-12 col-md-2">
-          <input type="text" id="keterangan" class="form-control form-control-sm" placeholder="Keterangan">
-        </div>
-        <div class="col-6 col-md-2">
-          <button id="btnSimpan" class="btn btn-primary-custom btn-sm w-100" onclick="simpan()">
-            <i class="bi bi-save"></i> Simpan
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Grafik Keuangan -->
-    <div id="sectionGrafik" class="custom-card p-3 mb-3 collapsible-section collapsed">
-      <h5 class="mb-3"><i class="bi bi-graph-up"></i> Grafik Keuangan</h5>
-      
-      <canvas id="chartKeuangan" class="chart-canvas"></canvas>
-      
-      <div class="mt-3 text-center">
-        <div id="statusBox" class="p-3 rounded fw-bold">Status Keuangan</div>
-      </div>
-      
-      <hr>
-      
-      <h6 class="mt-3 mb-2"><i class="bi bi-pie-chart"></i> Pengeluaran per Kategori</h6>
-      <div class="pie-chart-container">
-        <canvas id="chartKategori"></canvas>
-      </div>
-    </div>
-
-    <!-- Daftar Transaksi -->
-    <div id="sectionTransaksi" class="custom-card p-3 mb-3 collapsible-section">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0"><i class="bi bi-list-ul"></i> Daftar Transaksi</h5>
-        <span class="badge bg-secondary" id="transactionCount">0 transaksi</span>
-      </div>
-      <div class="table-container">
-        <table class="table table-striped table-hover mb-0">
-          <thead>
-            <tr>
-              <th>Tanggal</th>
-              <th>Jenis</th>
-              <th>Kategori</th>
-              <th class="text-end">Jumlah</th>
-              <th>Keterangan</th>
-              <th class="text-end">Saldo</th>
-              <th class="text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="tabelTransaksi">
-            <tr><td colspan="7" class="text-center text-muted py-4">Memuat data...</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="loading" id="loadingTable">
-        <div class="spinner-border text-primary" role="status"></div>
-        <p class="mt-2 mb-0 small">Memuat transaksi...</p>
-      </div>
-    </div>
-
-    <!-- Summary Category -->
-    <div id="sectionSummary" class="custom-card p-3 mb-3 collapsible-section collapsed">
-      <h5 class="mb-3"><i class="bi bi-pie-chart"></i> Summary Category</h5>
-      <div class="row g-3" id="summaryContainer">
-        <div class="col-12 text-muted text-center py-4">
-          <i class="bi bi-info-circle me-2"></i>Klik "Tampilkan" untuk melihat summary"
-
-<button onclick="toggleDark()" class="btn btn-dark">
-🌙 Dark Mode
-</button>
-
-<button onclick="logout()" class="btn btn-danger">
-Logout
-</button>
-<h4 id="statusKeuangan"></h4>
-
- </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<a href="index.html" class="btn btn-danger" onclick="logout()">
-    Logout
-</a>
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script src="script.js"></script>      
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
-

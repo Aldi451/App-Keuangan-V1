@@ -54,9 +54,10 @@ Setelah database siap, langkah terakhir adalah menghubungkan frontend dengan Sup
 
 `javascript
 // Contoh penyesuaian di script.js
-const SUPABASE_URL = 'https://xxxxx.supabase.co'; // Ganti dengan URL Anda
-const SUPABASE_KEY = 'public-anon-key-xxxxx';     // Ganti dengan API Key Anda
-Kamu bisa mencoba web nya dengan mengklik link berikut https://aldi451.github.io/App-Keuangan-V1
+const SUPABASE_URL = 'https://xxxxx.supabase.co'; // Ganti dengan URL Anda.
+const SUPABASE_KEY = 'public-anon-key-xxxxx';     // Ganti dengan API Key Anda.
+
+Anda juga bisa mencoba web nya dengan mengklik link berikut https://aldi451.github.io/App-Keuangan-V1
 
 
 ## 🚀 About Me

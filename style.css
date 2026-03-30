@@ -22,3 +22,259 @@ font-weight:bold;
 color:#dc3545;
 font-weight:bold;
 }
+
+/* ==================== ROOT VARIABLES ==================== */
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+}
+
+/* ==================== BODY & BACKGROUND ==================== */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ==================== CARD STYLES ==================== */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+/* ==================== BALANCE CARD ==================== */
+.balance-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+}
+
+.balance-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 10px 0 5px 0;
+    white-space: nowrap;
+}
+
+.balance-card small {
+    opacity: 0.9;
+    font-size: 12px;
+}
+
+/* ==================== BUTTONS ==================== */
+.btn-action {
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* ==================== COLLAPSED SECTION ==================== */
+.collapsed {
+    display: none;
+}
+
+/* ==================== FORM CONTROLS ==================== */
+.form-control, .form-select {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 10px 15px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* ==================== TABLE STYLES ==================== */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+    white-space: nowrap;
+    padding: 12px;
+}
+
+.text-nowrap {
+    white-space: nowrap !important;
+}
+
+/* ==================== CATEGORY SUGGESTIONS ==================== */
+.category-container {
+    position: relative;
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: none;
+}
+
+.suggestions.show {
+    display: block;
+}
+
+.suggestions div {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.suggestions div:hover {
+    background: #f8f9fa;
+}
+
+.suggestions .add-new {
+    background: #e7f3ff;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* ==================== BADGES ==================== */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+    border-radius: 6px;
+}
+
+.status-baik {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    color: white;
+}
+
+.status-boros {
+    background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);
+    color: white;
+}
+
+.status-normal {
+    background: linear-gradient(135deg, #ffc107 0%, #ffdb72 100%);
+    color: #333;
+}
+
+.status-kosong {
+    background: #6c757d;
+    color: white;
+}
+
+/* ==================== SUMMARY CARD ==================== */
+.summary-card.masuk {
+    border-left: 4px solid var(--success-color);
+}
+
+.summary-card.keluar {
+    border-left: 4px solid var(--danger-color);
+}
+
+/* ==================== INFO BOX ==================== */
+.info-box {
+    transition: all 0.3s;
+}
+
+/* ==================== CHART CONTAINER ==================== */
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+/* ==================== LOADING ==================== */
+.loading {
+    display: none;
+}
+
+.loading.show {
+    display: block;
+}
+
+/* ==================== BUTTON CHECK (TOGGLE) ==================== */
+.btn-check:checked + .btn-outline-warning {
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+    color: #000;
+}
+
+/* ==================== COMPARISON CARD ==================== */
+.comparison-card {
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s;
+}
+
+.comparison-card:hover {
+    border-color: var(--warning-color);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+}
+
+.trend-indicator {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* ==================== MOBILE RESPONSIVE ==================== */
+@media (max-width: 576px) {
+    .balance-card h3 {
+        font-size: 16px;
+    }
+    
+    .table {
+        font-size: 0.85rem;
+    }
+    
+    .table th, .table td {
+        padding: 8px;
+    }
+    
+    h4 {
+        font-size: 1rem;
+    }
+    
+    .btn-action {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}

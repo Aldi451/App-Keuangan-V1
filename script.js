@@ -1,7 +1,11 @@
-let user = JSON.parse(localStorage.getItem("user"));
-if (!user) {
-    window.location.href = "index.html";
+let user=JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+
+window.location.href="index.html";
+
 }
+
 const supabaseUrl = "https://rnllunfxsidqbjtojbjc.supabase.co";
 const supabaseKey = "sb_publishable_xKbmQSrlq3nEhcGTvNy4Ng_OGYh8_it";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
@@ -106,7 +110,7 @@ function resetForm() {
     document.getElementById("kategori").value = "";
     document.getElementById("jumlah").value = "";
     document.getElementById("keterangan").value = "";
-    document.getElementById("btnSimpan").innerHTML = '💾 Simpan';
+    document.getElementById("btnSimpan").innerHTML = '<i class="bi bi-save"></i> Simpan';
     setDefaultTanggal();
 }
 
@@ -117,7 +121,6 @@ async function fetchCategoriesFromDB() {
             .from("kategori")
             .select("nama_kategori")
             .order("nama_kategori", { ascending: true });
-        
         if (error) {
             data = [
                 { nama_kategori: 'Makanan' }, { nama_kategori: 'Transportasi' },
@@ -142,7 +145,6 @@ function initCategoryLookup() {
     const suggestions = document.getElementById('kategoriSuggestions');
     const input = document.getElementById('kategori');
     fetchCategoriesFromDB();
-    
     input.addEventListener('input', function() {
         const value = this.value.toLowerCase().trim();
         if (!value) { suggestions.classList.remove('show'); return; }
@@ -158,7 +160,6 @@ function initCategoryLookup() {
             suggestions.classList.add('show');
         }
     });
-    
     input.addEventListener('blur', () => setTimeout(() => suggestions.classList.remove('show'), 200));
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') suggestions.classList.remove('show'); });
 }
@@ -177,28 +178,20 @@ function selectCategory(category) {
 async function addNewCategory(category) {
     if (!category || !category.trim()) return;
     const categoryName = category.trim();
-    
     if (dbCategories.includes(categoryName)) {
         document.getElementById('kategori').value = categoryName;
         document.getElementById('kategoriSuggestions').classList.remove('show');
         return;
     }
-    
     try {
-        // Insert tanpa specify ID untuk menghindari duplicate
-        const { error } = await supabaseClient
-            .from("kategori")
-            .insert([{ nama_kategori: categoryName }]);
-        
+        const { error } = await supabaseClient.from("kategori").insert([{ nama_kategori: categoryName }]);
         if (error) {
-            // Jika error, tetap tambahkan ke local list
             dbCategories.push(categoryName);
             dbCategories.sort();
             updateDatalist();
         } else {
             await fetchCategoriesFromDB();
         }
-        
         document.getElementById('kategori').value = categoryName;
         document.getElementById('kategoriSuggestions').classList.remove('show');
     } catch (err) {
@@ -213,25 +206,21 @@ async function addNewCategory(category) {
 // ==================== CURRENCY INPUT ====================
 function initCurrencyInput() {
     const input = document.getElementById('jumlah');
-    
     input.addEventListener('input', function() {
         let value = this.value.replace(/[^0-9]/g, '');
         if (value) this.value = new Intl.NumberFormat('id-ID').format(parseInt(value));
     });
-    
     input.addEventListener('paste', function(e) {
         e.preventDefault();
         const pasted = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
         if (pasted) this.value = new Intl.NumberFormat('id-ID').format(parseInt(pasted));
     });
-    
     input.addEventListener('blur', function() {
         if (this.value) {
             const num = parseInt(this.value.replace(/[^0-9]/g, ''));
             this.value = new Intl.NumberFormat('id-ID').format(num);
         }
     });
-    
     input.addEventListener('focus', function() {
         if (this.value) this.value = this.value.replace(/[^0-9]/g, '');
     });
@@ -241,7 +230,6 @@ function initCurrencyInput() {
 function toggleSection(sectionId, btn) {
     const section = document.getElementById(sectionId);
     const icon = btn ? btn.querySelector('i') : null;
-    
     if (!section) return;
     
     if (section.classList.contains('collapsed')) {
@@ -264,8 +252,8 @@ function toggleSection(sectionId, btn) {
         section.classList.add('collapsed');
         if (icon) icon.style.transform = 'rotate(-90deg)';
     }
+    // NOTE: Jangan tambahkan class 'collapsed' ke tombol!
 }
-
 // ==================== COMPARISON FUNCTIONS ====================
 function initComparisonYearDropdown() {
     const yearSelect = document.getElementById('filterTahunPembanding');
@@ -279,7 +267,6 @@ function initComparisonYearDropdown() {
         if (year === currentYear) option.selected = true;
         yearSelect.appendChild(option);
     }
-    
     const monthSelect = document.getElementById('filterBulanPembanding');
     if (monthSelect) {
         const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
@@ -299,21 +286,16 @@ async function generateComparison() {
     const container = document.getElementById('comparisonContainer');
     const categoryBody = document.getElementById('categoryComparisonBody');
     const recommendationContainer = document.getElementById('recommendationContainer');
-    
     if (!container) return;
-    
-    container.innerHTML = '<div class="alert alert-info">⏳ Memuat data perbandingan...</div>';
-    
+    container.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-warning"></div><p class="mt-2">Memuat data perbandingan...</p></div>';
     try {
         const bulan = document.getElementById('filterBulanPembanding').value;
         const tahun = document.getElementById('filterTahunPembanding').value;
-        
         const currentPeriod = await getPeriodData(tahun, bulan);
         const prevMonthData = await getPreviousMonthData(tahun, bulan);
         const prevYearData = await getPreviousYearData(tahun, bulan);
         const currentYearData = await getYearData(tahun);
         const prevYearTotalData = await getYearData(parseInt(tahun) - 1);
-        
         comparisonData = {
             current: currentPeriod,
             prevMonth: prevMonthData,
@@ -321,7 +303,6 @@ async function generateComparison() {
             currentYear: currentYearData,
             prevYearTotal: prevYearTotalData
         };
-        
         renderComparisonCards(container);
         renderCategoryComparison(categoryBody, currentPeriod, prevMonthData);
         generateRecommendations(recommendationContainer, currentPeriod, prevMonthData, prevYearData);
@@ -335,18 +316,14 @@ async function getPeriodData(tahun, bulan) {
     const awal = `${tahun}-${bulan}-01`;
     const lastDay = new Date(tahun, parseInt(bulan), 0).getDate();
     const akhir = `${tahun}-${bulan}-${String(lastDay).padStart(2, '0')}`;
-    
     const { data, error } = await supabaseClient
         .from('transaksi')
         .select('tanggal, jenis, kategori, jumlah')
         .gte('tanggal', awal)
         .lte('tanggal', akhir);
-    
     if (error || !data) return { masuk: 0, keluar: 0, categories: {} };
-    
     let masuk = 0, keluar = 0;
     const categories = {};
-    
     data.forEach(row => {
         const amount = row.jumlah || 0;
         if (row.jenis === 'Masuk') {
@@ -359,7 +336,6 @@ async function getPeriodData(tahun, bulan) {
             }
         }
     });
-    
     return { masuk, keluar, categories, saldo: masuk - keluar };
 }
 
@@ -381,18 +357,14 @@ async function getPreviousYearData(tahun, bulan) {
 async function getYearData(tahun) {
     const awal = `${tahun}-01-01`;
     const akhir = `${tahun}-12-31`;
-    
     const { data, error } = await supabaseClient
         .from('transaksi')
         .select('tanggal, jenis, kategori, jumlah')
         .gte('tanggal', awal)
         .lte('tanggal', akhir);
-    
     if (error || !data) return { masuk: 0, keluar: 0, categories: {} };
-    
     let masuk = 0, keluar = 0;
     const categories = {};
-    
     data.forEach(row => {
         const amount = row.jumlah || 0;
         if (row.jenis === 'Masuk') {
@@ -405,7 +377,6 @@ async function getYearData(tahun) {
             }
         }
     });
-    
     return { masuk, keluar, categories, saldo: masuk - keluar };
 }
 
@@ -420,7 +391,6 @@ function formatPercentage(percentage, isExpense = true) {
     const absPercentage = Math.abs(percentage).toFixed(1);
     const isIncrease = percentage > 0;
     const isDecrease = percentage < 0;
-    
     let isGood, colorClass, icon;
     if (isExpense) {
         isGood = isDecrease;
@@ -431,20 +401,17 @@ function formatPercentage(percentage, isExpense = true) {
         colorClass = isGood ? 'text-success' : 'text-danger';
         icon = isIncrease ? '↑' : '↓';
     }
-    
     const sign = isDecrease ? '-' : '';
     return `<span class="${colorClass} fw-bold text-nowrap">${icon} ${sign}${absPercentage}%</span>`;
 }
 
 function formatChangeDescription(percentage, isExpense = true) {
     if (percentage === 0) {
-        return '→ Stabil';
+        return '<span class="badge bg-secondary text-nowrap">→ Stabil</span>';
     }
-    
     const isIncrease = percentage > 0;
     const isDecrease = percentage < 0;
     let text, badgeClass;
-    
     if (isExpense) {
         if (isIncrease) {
             text = '⚠️ Peningkatan';
@@ -462,22 +429,19 @@ function formatChangeDescription(percentage, isExpense = true) {
             badgeClass = 'bg-danger';
         }
     }
-    
     return `<span class="badge ${badgeClass} text-nowrap">${text}</span>`;
 }
 
 function renderComparisonCards(container) {
     if (!comparisonData) return;
-    
     const { current, prevMonth, currentYear, prevYearTotal } = comparisonData;
     let html = '';
-    
     if (showMonthlyComparison) {
         const monthChangeMasuk = calculateChange(current.masuk, prevMonth.masuk);
         const monthChangeKeluar = calculateChange(current.keluar, prevMonth.keluar);
         const monthChangeSaldo = calculateChange(current.saldo, prevMonth.saldo);
-        
-        html += `<div class="card bg-light mb-3">
+        html += `
+        <div class="card bg-light mb-3">
             <div class="card-header bg-warning">
                 <h6 class="mb-0">📅 Bulan Ini vs Bulan Lalu</h6>
             </div>
@@ -512,15 +476,15 @@ function renderComparisonCards(container) {
                     </div>
                 </div>
             </div>
-        </div>`;
+        </div>
+        `;
     }
-    
     if (showYearlyComparison) {
         const yearChangeMasuk = calculateChange(currentYear.masuk, prevYearTotal.masuk);
         const yearChangeKeluar = calculateChange(currentYear.keluar, prevYearTotal.keluar);
         const yearChangeSaldo = calculateChange(currentYear.saldo, prevYearTotal.saldo);
-        
-        html += `<div class="card bg-light mb-3">
+        html += `
+        <div class="card bg-light mb-3">
             <div class="card-header bg-info text-white">
                 <h6 class="mb-0">📆 Tahun Ini vs Tahun Lalu</h6>
             </div>
@@ -555,14 +519,14 @@ function renderComparisonCards(container) {
                     </div>
                 </div>
             </div>
-        </div>`;
+        </div>
+        `;
     }
-    
     if (showMonthlyComparison) {
         const monthChangeMasuk = calculateChange(current.masuk, prevMonth.masuk);
         const monthChangeKeluar = calculateChange(current.keluar, prevMonth.keluar);
-        
-        html += `<div class="row">
+        html += `
+        <div class="row">
             <div class="col-md-6 col-sm-12 mb-2">
                 <div class="card border-success h-100">
                     <div class="card-body text-center">
@@ -581,50 +545,44 @@ function renderComparisonCards(container) {
                     </div>
                 </div>
             </div>
-        </div>`;
+        </div>
+        `;
     }
-    
     container.innerHTML = html;
 }
 
 function renderCategoryComparison(container, current, prevMonth) {
     const allCategories = new Set([...Object.keys(current.categories), ...Object.keys(prevMonth.categories)]);
-    
     if (allCategories.size === 0) {
-        container.innerHTML = `<tr><td colspan="6" class="text-center">Belum ada data kategori</td></tr>`;
+        container.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3"><small>Belum ada data kategori</small></td></tr>';
         return;
     }
-    
     let tableRows = '';
     const sortedCategories = Array.from(allCategories).sort();
-    
     sortedCategories.forEach(category => {
         const currentAmount = current.categories[category] || 0;
         const prevAmount = prevMonth.categories[category] || 0;
         const selisih = currentAmount - prevAmount;
         const change = calculateChange(currentAmount, prevAmount);
-        
         const selisihFormatted = selisih >= 0 ? 
             `<span class="text-danger text-nowrap">+${formatRupiah(selisih)}</span>` : 
             `<span class="text-success text-nowrap">${formatRupiah(selisih)}</span>`;
-        
-        tableRows += `<tr>
-            <td class="fw-bold text-nowrap">${category}</td>
-            <td class="text-end fw-bold text-nowrap">${formatRupiah(currentAmount)}</td>
-            <td class="text-end text-nowrap">${formatRupiah(prevAmount)}</td>
-            <td class="text-end text-nowrap">${selisihFormatted}</td>
-            <td class="text-end text-nowrap">${formatPercentage(change, true)}</td>
-            <td class="text-center text-nowrap">${formatChangeDescription(change, true)}</td>
-        </tr>`;
+        tableRows += `
+            <tr>
+                <td class="fw-bold text-nowrap">${category}</td>
+                <td class="text-end fw-bold text-nowrap">${formatRupiah(currentAmount)}</td>
+                <td class="text-end text-nowrap">${formatRupiah(prevAmount)}</td>
+                <td class="text-end text-nowrap">${selisihFormatted}</td>
+                <td class="text-end text-nowrap">${formatPercentage(change, true)}</td>
+                <td class="text-center text-nowrap">${formatChangeDescription(change, true)}</td>
+            </tr>
+        `;
     });
-    
     container.innerHTML = tableRows;
 }
 
 function generateRecommendations(container, current, prevMonth, prevYear) {
     const recommendations = [];
-    
-    // Income analysis
     const incomeChange = calculateChange(current.masuk, prevMonth.masuk);
     if (incomeChange < -10) {
         recommendations.push({
@@ -641,8 +599,6 @@ function generateRecommendations(container, current, prevMonth, prevYear) {
             message: `Pemasukan Anda naik ${incomeChange.toFixed(1)}%! Pertahankan strategi yang berhasil.`
         });
     }
-    
-    // Expense analysis
     const expenseChange = calculateChange(current.keluar, prevMonth.keluar);
     if (expenseChange > 15) {
         recommendations.push({
@@ -659,8 +615,6 @@ function generateRecommendations(container, current, prevMonth, prevYear) {
             message: `Pengeluaran turun ${Math.abs(expenseChange).toFixed(1)}%. Bagus! Teruskan kebiasaan hemat ini.`
         });
     }
-    
-    // Savings rate
     const savingsRate = current.masuk > 0 ? ((current.masuk - current.keluar) / current.masuk) * 100 : 0;
     if (savingsRate < 10 && current.masuk > 0) {
         recommendations.push({
@@ -677,13 +631,10 @@ function generateRecommendations(container, current, prevMonth, prevYear) {
             message: `Anda menabung ${savingsRate.toFixed(1)}% dari pemasukan. Luar biasa! Pertahankan.`
         });
     }
-    
-    // Top category analysis
     if (current.categories) {
         const topCategories = Object.entries(current.categories)
             .sort((a, b) => b[1] - a[1])
             .slice(0, 3);
-        
         if (topCategories.length > 0) {
             const topCategory = topCategories[0];
             const percentage = (topCategory[1] / current.keluar) * 100;
@@ -697,7 +648,6 @@ function generateRecommendations(container, current, prevMonth, prevYear) {
             }
         }
     }
-    
     if (recommendations.length === 0) {
         recommendations.push({
             type: 'info',
@@ -706,14 +656,15 @@ function generateRecommendations(container, current, prevMonth, prevYear) {
             message: 'Tidak ada masalah signifikan terdeteksi. Teruskan pengelolaan keuangan yang baik!'
         });
     }
-    
-    container.innerHTML = recommendations.map(rec => `<div class="alert alert-${rec.type} d-flex align-items-start">
-        <span class="me-2" style="font-size: 1.5rem;">${rec.icon}</span>
-        <div>
-            <strong>${rec.title}</strong>
-            <p class="mb-0 small">${rec.message}</p>
+    container.innerHTML = recommendations.map(rec => `
+        <div class="alert alert-${rec.type} d-flex align-items-start">
+            <span class="me-2" style="font-size: 1.5rem;">${rec.icon}</span>
+            <div>
+                <strong>${rec.title}</strong>
+                <p class="mb-0 small">${rec.message}</p>
+            </div>
         </div>
-    </div>`).join('');
+    `).join('');
 }
 
 // ==================== SAVE TRANSACTION ====================
@@ -724,41 +675,23 @@ async function simpan() {
     const jumlahRaw = document.getElementById("jumlah").value;
     const keterangan = document.getElementById("keterangan").value.trim();
     const jumlah = parseCurrencyInput(jumlahRaw);
-    
     if (!tanggal || !kategori || !jumlah) {
         alert("⚠️ Data belum lengkap!");
         return;
     }
-    
     const dataPayload = { tanggal, jenis, kategori, jumlah, keterangan: keterangan || null };
-    
     try {
         if (editId) {
-            // Update existing - ID sudah ada
-            const { error } = await supabaseClient
-                .from("transaksi")
-                .update(dataPayload)
-                .eq("id", editId);
+            const { error } = await supabaseClient.from("transaksi").update(dataPayload).eq("id", editId);
             if (error) throw error;
             alert("✅ Data berhasil diupdate");
         } else {
-            // Insert new - JANGAN specify ID, biarkan database auto-generate
-            const { error } = await supabaseClient
-                .from("transaksi")
-                .insert([dataPayload]);
-            if (error) {
-                if (error.message.includes('duplicate key')) {
-                    alert("⚠️ Terjadi duplikasi data. Silakan coba lagi.");
-                } else {
-                    throw error;
-                }
-                return;
-            }
+            const { error } = await supabaseClient.from("transaksi").insert([dataPayload]);
+            if (error) throw error;
             alert("✅ Data berhasil disimpan");
         }
-        
         resetForm();
-        await loadData();
+        loadData();
     } catch (error) {
         alert("❌ Error: " + error.message);
     }
@@ -768,10 +701,8 @@ async function simpan() {
 async function loadData() {
     const bulan = document.getElementById("filterBulan").value;
     const tahun = document.getElementById("filterTahun").value;
-    
     const loadingTable = document.getElementById('loadingTable');
     const sectionTransaksi = document.getElementById('sectionTransaksi');
-    
     if (sectionTransaksi && sectionTransaksi.classList.contains('collapsed')) {
         sectionTransaksi.classList.remove('collapsed');
         const btn = document.querySelector('button[onclick*="sectionTransaksi"]');
@@ -781,24 +712,16 @@ async function loadData() {
             if (icon) icon.style.transform = 'rotate(0deg)';
         }
     }
-    
     if (loadingTable) loadingTable.classList.add('show');
-    
     let awal = null, akhirTanggal = null;
     if (bulan && tahun) {
         awal = `${tahun}-${bulan}-01`;
         const lastDay = new Date(tahun, parseInt(bulan), 0).getDate();
         akhirTanggal = `${tahun}-${bulan}-${String(lastDay).padStart(2, '0')}`;
     }
-    
-    // Calculate opening balance
     let opening = 0;
     if (awal) {
-        const { data: beforeData } = await supabaseClient
-            .from("transaksi")
-            .select("jenis, jumlah")
-            .lt("tanggal", awal);
-        
+        const { data: beforeData } = await supabaseClient.from("transaksi").select("jenis, jumlah").lt("tanggal", awal);
         if (beforeData) {
             beforeData.forEach(row => {
                 if (row.jenis === "Masuk") opening += (row.jumlah || 0);
@@ -806,40 +729,24 @@ async function loadData() {
             });
         }
     }
-    
-    // Fetch transactions
-    let query = supabaseClient
-        .from("transaksi")
-        .select("id, tanggal, jenis, kategori, jumlah, keterangan")
-        .order("tanggal", { ascending: true })
-        .order("id", { ascending: true });
-    
+    let query = supabaseClient.from("transaksi").select("id, tanggal, jenis, kategori, jumlah, keterangan").order("tanggal", { ascending: true }).order("id", { ascending: true });
     if (bulan && tahun) {
         query = query.gte("tanggal", awal).lte("tanggal", akhirTanggal);
     }
-    
     const { data, error } = await query;
-    
     if (loadingTable) loadingTable.classList.remove('show');
-    
     if (error) {
         const tbl = document.getElementById("tabelTransaksi");
         if (tbl) tbl.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">❌ Error: ${error.message}</td></tr>`;
         return;
     }
-    
-    let tabel = "";
-    let masuk = 0, keluar = 0, saldo = opening;
-    
+    let tabel = "", masuk = 0, keluar = 0, saldo = opening;
     if (!data || data.length === 0) {
         const tbl = document.getElementById("tabelTransaksi");
         const count = document.getElementById("transactionCount");
-        
         if (tbl) tbl.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">📭 Belum ada transaksi</td></tr>`;
         if (count) count.innerText = "0 transaksi";
-        
         updateBalanceCards(opening, 0, 0, opening, 0);
-        
         if (document.getElementById('sectionGrafik') && !document.getElementById('sectionGrafik').classList.contains('collapsed')) {
             buatChart(0, 0);
             buatChartKategori([]);
@@ -847,15 +754,12 @@ async function loadData() {
         }
         return;
     }
-    
     data.forEach(row => {
         const amount = row.jumlah || 0;
         if (row.jenis === "Masuk") { masuk += amount; saldo += amount; }
         else { keluar += amount; saldo -= amount; }
-        
         const badgeClass = row.jenis === 'Masuk' ? 'success' : 'danger';
         const amountClass = row.jenis === 'Masuk' ? 'text-success' : 'text-danger';
-        
         tabel += `<tr>
             <td><small>${formatTanggal(row.tanggal) || '-'}</small></td>
             <td><span class="badge bg-${badgeClass}">${row.jenis}</span></td>
@@ -869,22 +773,17 @@ async function loadData() {
             </td>
         </tr>`;
     });
-    
     const ending = opening + (masuk - keluar);
     const count = document.getElementById("transactionCount");
     if (count) count.innerText = `${data.length} transaksi`;
-    
     updateBalanceCards(opening, masuk, keluar, ending, data.length);
-    
     const tbl = document.getElementById("tabelTransaksi");
     if (tbl) tbl.innerHTML = tabel;
-    
     if (document.getElementById('sectionGrafik') && !document.getElementById('sectionGrafik').classList.contains('collapsed')) {
         buatChart(masuk, keluar);
         buatChartKategori(data);
         await buatTrend();
     }
-    
     if (document.getElementById('sectionSummary') && !document.getElementById('sectionSummary').classList.contains('collapsed')) {
         generateSummaryCategory(data);
     }
@@ -894,16 +793,12 @@ async function loadData() {
 function updateBalanceCards(opening, masuk, keluar, ending, total) {
     const el = document.getElementById("openingBalance");
     if (el) el.innerText = formatRupiah(opening);
-    
     const el2 = document.getElementById("totalMasuk");
     if (el2) el2.innerText = formatRupiah(masuk);
-    
     const el3 = document.getElementById("totalKeluar");
     if (el3) el3.innerText = formatRupiah(keluar);
-    
     const el4 = document.getElementById("endingBalance");
     if (el4) el4.innerText = formatRupiah(ending);
-    
     setTimeout(() => adjustAllBalanceCards(), 100);
 }
 
@@ -911,10 +806,8 @@ function updateBalanceCards(opening, masuk, keluar, ending, total) {
 function buatChart(masuk, keluar) {
     const canvas = document.getElementById("chartKeuangan");
     if (!canvas) return;
-    
     const ctx = canvas.getContext("2d");
     if (chart) { chart.destroy(); chart = null; }
-    
     const formatAngka = (angka) => {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
@@ -923,7 +816,6 @@ function buatChart(masuk, keluar) {
             maximumFractionDigits: 0
         }).format(angka);
     };
-    
     const formatAxis = (value) => {
         if (value >= 1000000000) {
             return 'Rp ' + (value / 1000000000).toFixed(1) + ' M';
@@ -934,7 +826,6 @@ function buatChart(masuk, keluar) {
         }
         return 'Rp ' + value;
     };
-    
     chart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -1004,7 +895,6 @@ function buatChart(masuk, keluar) {
             onResize: (chart, size) => { chart.options.aspectRatio = size.width < 576 ? 1.5 : 2; }
         }
     });
-    
     updateStatusBox(masuk, keluar);
     updateChartInfo(masuk, keluar);
 }
@@ -1015,11 +905,9 @@ function updateChartInfo(masuk, keluar) {
     const elPengeluaran = document.getElementById('infoPengeluaran');
     const elSaldoValue = document.getElementById('infoSaldoValue');
     const elSaldoBox = document.getElementById('infoSaldo');
-    
     if (elPemasukan) elPemasukan.innerText = formatRupiah(masuk || 0);
     if (elPengeluaran) elPengeluaran.innerText = formatRupiah(keluar || 0);
     if (elSaldoValue) elSaldoValue.innerText = formatRupiah(Math.abs(saldo));
-    
     if (elSaldoBox) {
         if (saldo >= 0) {
             elSaldoBox.className = 'info-box p-3 rounded bg-success bg-gradient text-white';
@@ -1030,9 +918,7 @@ function updateChartInfo(masuk, keluar) {
 }
 
 function updateStatusBox(masuk, keluar) {
-    let status = "";
-    let css = "";
-    
+    let status = "", css = "";
     if ((masuk === 0 || !masuk) && (keluar === 0 || !keluar)) {
         status = "⚪ Belum ada transaksi";
         css = "status-kosong";
@@ -1046,7 +932,6 @@ function updateStatusBox(masuk, keluar) {
         status = "🟡 Keuangan normal";
         css = "status-normal";
     }
-    
     const box = document.getElementById("statusBox");
     if (box) {
         box.className = "p-3 rounded fw-bold " + css;
@@ -1057,10 +942,8 @@ function updateStatusBox(masuk, keluar) {
 function buatChartKategori(data) {
     const canvas = document.getElementById("chartKategori");
     if (!canvas) return;
-    
     const ctx = canvas.getContext("2d");
     if (chartKategori) { chartKategori.destroy(); chartKategori = null; }
-    
     let kategoriMap = {};
     if (data && Array.isArray(data)) {
         data.forEach(row => {
@@ -1070,10 +953,8 @@ function buatChartKategori(data) {
             }
         });
     }
-    
     const labels = Object.keys(kategoriMap);
     const values = Object.values(kategoriMap);
-    
     if (labels.length === 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.font = "14px sans-serif";
@@ -1083,29 +964,19 @@ function buatChartKategori(data) {
         ctx.fillText("📭 Belum ada data", canvas.width/2, canvas.height/2);
         return;
     }
-    
     const colors = ['rgba(102, 126, 234, 0.8)', 'rgba(118, 75, 162, 0.8)', 'rgba(240, 147, 251, 0.8)', 'rgba(245, 87, 108, 0.8)', 'rgba(56, 239, 125, 0.8)', 'rgba(17, 153, 142, 0.8)'];
-    
     chartKategori = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: labels,
-            datasets: [{
-                data: values,
-                backgroundColor: colors.slice(0, labels.length),
-                borderColor: '#fff',
-                borderWidth: 3
-            }]
+            datasets: [{ data: values, backgroundColor: colors.slice(0, labels.length), borderColor: '#fff', borderWidth: 3 }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             cutout: '60%',
             plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { padding: 12, usePointStyle: true, font: { size: 10 } }
-                }
+                legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true, font: { size: 10 } } }
             }
         }
     });
@@ -1114,17 +985,10 @@ function buatChartKategori(data) {
 async function buatTrend() {
     const canvas = document.getElementById("chartTrend");
     if (!canvas) return;
-    
     const ctx = canvas.getContext("2d");
     if (chartTrend) { chartTrend.destroy(); chartTrend = null; }
-    
-    const { data, error } = await supabaseClient
-        .from("transaksi")
-        .select("tanggal, jenis, jumlah")
-        .order("tanggal", { ascending: true });
-    
+    const { data, error } = await supabaseClient.from("transaksi").select("tanggal, jenis, jumlah").order("tanggal", { ascending: true });
     if (error) return;
-    
     let monthlyData = {};
     if (data && Array.isArray(data)) {
         data.forEach(row => {
@@ -1136,10 +1000,8 @@ async function buatTrend() {
             else monthlyData[periode].keluar += amount;
         });
     }
-    
     const labels = Object.keys(monthlyData).sort();
     const values = labels.map(l => (monthlyData[l].masuk || 0) - (monthlyData[l].keluar || 0));
-    
     if (labels.length === 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.font = "14px sans-serif";
@@ -1149,32 +1011,21 @@ async function buatTrend() {
         ctx.fillText("📈 Belum ada data", canvas.width/2, canvas.height/2);
         return;
     }
-    
     const displayLabels = labels.map(l => {
         const [year, month] = l.split('-');
         const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         return months[parseInt(month)-1] + ' ' + year;
     });
-    
     chartTrend = new Chart(ctx, {
         type: 'line',
         data: {
             labels: displayLabels,
-            datasets: [{
-                label: "Saldo Bersih",
-                data: values,
-                borderColor: "#667eea",
-                backgroundColor: "rgba(102, 126, 234, 0.15)",
-                fill: true,
-                tension: 0.4
-            }]
+            datasets: [{ label: "Saldo Bersih", data: values, borderColor: "#667eea", backgroundColor: "rgba(102, 126, 234, 0.15)", fill: true, tension: 0.4 }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: true, position: 'top' }
-            }
+            plugins: { legend: { display: true, position: 'top' } }
         }
     });
 }
@@ -1183,14 +1034,11 @@ async function buatTrend() {
 function generateSummaryCategory(data = null) {
     const container = document.getElementById('summaryContainer');
     if (!container) return;
-    
     if (!data) {
-        container.innerHTML = '<p class="text-muted text-center">Klik "Tampilkan" untuk melihat summary</p>';
+        container.innerHTML = '<div class="col-12 text-center text-muted py-4"><small>Klik "Tampilkan" untuk melihat summary</small></div>';
         return;
     }
-    
     const summary = {};
-    
     if (data && Array.isArray(data) && data.length > 0) {
         data.forEach(row => {
             const kat = row.kategori?.trim();
@@ -1201,45 +1049,30 @@ function generateSummaryCategory(data = null) {
             else summary[kat].keluar += (row.jumlah || 0);
         });
     }
-    
     if (Object.keys(summary).length === 0) {
-        container.innerHTML = '<p class="text-muted text-center">Tidak ada data</p>';
+        container.innerHTML = '<div class="col-12 text-center text-muted py-4"><small>Tidak ada data</small></div>';
         return;
     }
-    
-    const sorted = Object.entries(summary).sort((a, b) => 
-        ((b[1].masuk || 0) + (b[1].keluar || 0)) - ((a[1].masuk || 0) + (a[1].keluar || 0))
-    );
-    
+    const sorted = Object.entries(summary).sort((a, b) => ((b[1].masuk || 0) + (b[1].keluar || 0)) - ((a[1].masuk || 0) + (a[1].keluar || 0)));
     container.innerHTML = sorted.map(([kategori, stats]) => {
         const masuk = stats.masuk || 0;
         const keluar = stats.keluar || 0;
         const netto = masuk - keluar;
         const isPositive = netto >= 0;
-        
         return `<div class="col-md-4 col-sm-6">
             <div class="card summary-card ${isPositive ? 'masuk' : 'keluar'} p-3 h-100">
                 <div class="d-flex justify-content-between align-items-start mb-2">
-                    <div>
-                        <h6 class="mb-0 fw-bold">${kategori}</h6>
-                        <small class="text-muted">${stats.count}x transaksi</small>
-                    </div>
+                    <div><h6 class="mb-0 fw-bold">${kategori}</h6><small class="text-muted">${stats.count}x transaksi</small></div>
                     <span class="badge bg-${isPositive ? 'success' : 'danger'} rounded-pill">${isPositive ? '↑' : '↓'}</span>
                 </div>
                 <hr class="my-2">
                 <div class="row text-center small">
-                    <div class="col-6 border-end">
-                        <div class="text-success fw-bold">${formatRupiah(masuk)}</div>
-                        <small class="text-muted">Masuk</small>
-                    </div>
-                    <div class="col-6">
-                        <div class="text-danger fw-bold">${formatRupiah(keluar)}</div>
-                        <small class="text-muted">Keluar</small>
-                    </div>
+                    <div class="col-6 border-end"><div class="text-success fw-bold">${formatRupiah(masuk)}</div><small class="text-muted">Masuk</small></div>
+                    <div class="col-6"><div class="text-danger fw-bold">${formatRupiah(keluar)}</div><small class="text-muted">Keluar</small></div>
                 </div>
                 <div class="mt-2 pt-2 border-top text-center">
                     <small class="text-muted d-block">Netto</small>
-                    <strong class="${isPositive ? 'text-success' : 'text-danger'}" style="font-size: 1.1rem;">${formatRupiah(Math.abs(netto))}</strong>
+                    <strong class="${isPositive ? 'text-success' : 'text-danger'}" style="font-size: 1.1rem">${formatRupiah(Math.abs(netto))}</strong>
                 </div>
             </div>
         </div>`;
@@ -1254,16 +1087,14 @@ function editData(id, tanggal, jenis, kategori, jumlah, keterangan) {
     document.getElementById("kategori").value = kategori || '';
     document.getElementById("jumlah").value = jumlah ? new Intl.NumberFormat('id-ID').format(jumlah) : '';
     document.getElementById("keterangan").value = keterangan || '';
-    document.getElementById("btnSimpan").innerHTML = '🔄 Update';
+    document.getElementById("btnSimpan").innerHTML = '<i class="bi bi-pencil"></i> Update';
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 async function hapusData(id) {
     if (!confirm("⚠️ Yakin ingin menghapus?")) return;
-    
     const { error } = await supabaseClient.from("transaksi").delete().eq("id", id);
     if (error) { alert("❌ Error: " + error.message); return; }
-    
     alert("✅ Transaksi dihapus");
     loadData();
 }
@@ -1272,32 +1103,17 @@ async function hapusData(id) {
 async function exportExcel() {
     const btn = document.querySelector('button[onclick="exportExcel()"]');
     const originalText = btn ? btn.innerHTML : '';
-    if (btn) { btn.innerHTML = '⏳ Exporting...'; btn.disabled = true; }
-    
+    if (btn) { btn.innerHTML = ' Exporting...'; btn.disabled = true; }
     try {
-        const { data, error } = await supabaseClient
-            .from("transaksi")
-            .select("id, tanggal, jenis, kategori, jumlah, keterangan")
-            .order("tanggal", { ascending: false });
-        
+        const { data, error } = await supabaseClient.from("transaksi").select("id, tanggal, jenis, kategori, jumlah, keterangan").order("tanggal", { ascending: false });
         if (error) throw error;
         if (!data || data.length === 0) { alert("📭 Tidak ada data"); return; }
-        
-        const exportData = data.map(row => ({
-            'Tanggal': row.tanggal,
-            'Jenis': row.jenis,
-            'Kategori': row.kategori,
-            'Jumlah': row.jumlah,
-            'Keterangan': row.keterangan || ''
-        }));
-        
+        const exportData = data.map(row => ({ 'Tanggal': row.tanggal, 'Jenis': row.jenis, 'Kategori': row.kategori, 'Jumlah': row.jumlah, 'Keterangan': row.keterangan || '' }));
         const ws = XLSX.utils.json_to_sheet(exportData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Transaksi");
-        
         const filename = 'laporan_keuangan_' + new Date().toISOString().split('T')[0] + '.xlsx';
         XLSX.writeFile(wb, filename);
-        
         alert('✅ Export berhasil: ' + filename);
     } catch (err) {
         alert("❌ Error export: " + err.message);
@@ -1315,38 +1131,23 @@ async function exportDatabaseBackup() {
     const message = document.getElementById('progressModalMessage');
     const progressBar = document.getElementById('progressBar');
     const progressDetail = document.getElementById('progressDetail');
-    
     title.innerText = '📦 Export Backup Database';
     message.innerText = 'Mengambil data dari Supabase...';
     progressBar.style.width = '0%';
     progressDetail.innerText = '';
     modal.show();
-    
     try {
         progressBar.style.width = '20%';
         progressDetail.innerText = 'Mengambil tabel: transaksi...';
-        
-        let { data: transaksi, error: errTrans } = await supabaseClient
-            .from('transaksi')
-            .select('*')
-            .order('tanggal', { ascending: true });
-        
+        let { data: transaksi, error: errTrans } = await supabaseClient.from('transaksi').select('*').order('tanggal', { ascending: true });
         if (errTrans) throw new Error('Gagal fetch transaksi: ' + errTrans.message);
-        
         progressBar.style.width = '40%';
         progressDetail.innerText = 'Mengambil tabel: kategori (jika ada)...';
-        
         let kategori = [];
-        let { data: katData, error: errKat } = await supabaseClient
-            .from('kategori')
-            .select('*')
-            .order('nama_kategori', { ascending: true });
-        
+        let { data: katData, error: errKat } = await supabaseClient.from('kategori').select('*').order('nama_kategori', { ascending: true });
         if (!errKat && katData) { kategori = katData; }
-        
         progressBar.style.width = '60%';
         progressDetail.innerText = 'Mengumpulkan metadata...';
-        
         const backupData = {
             meta: {
                 exportedAt: new Date().toISOString(),
@@ -1361,24 +1162,17 @@ async function exportDatabaseBackup() {
             stats: {
                 totalTransaksi: transaksi?.length || 0,
                 totalKategori: kategori?.length || 0,
-                dateRange: transaksi?.length > 0 ? { 
-                    from: transaksi[0].tanggal, 
-                    to: transaksi[transaksi.length - 1].tanggal 
-                } : null
+                dateRange: transaksi?.length > 0 ? { from: transaksi[0].tanggal, to: transaksi[transaksi.length - 1].tanggal } : null
             }
         };
-        
         progressBar.style.width = '80%';
         message.innerText = 'Membuat file backup...';
-        
         const jsonString = JSON.stringify(backupData, null, 2);
         const blob = new Blob([jsonString], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
-        
         progressBar.style.width = '100%';
         message.innerText = '✅ Backup siap diunduh!';
         progressDetail.innerText = 'Mengunduh file...';
-        
         const a = document.createElement('a');
         const filename = `backup_keuangan_${new Date().toISOString().split('T')[0]}_${Date.now()}.json`;
         a.href = url;
@@ -1387,18 +1181,15 @@ async function exportDatabaseBackup() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
         setTimeout(() => {
             modal.hide();
             alert(`✅ Backup berhasil!\n\n📁 File: ${filename}\n📊 Transaksi: ${backupData.stats.totalTransaksi}\n🏷️ Kategori: ${backupData.stats.totalKategori}\n\n💡 Simpan file ini di tempat aman!`);
         }, 500);
-        
     } catch (error) {
         message.innerText = '❌ Gagal export backup';
         progressDetail.innerText = error.message;
         progressBar.classList.remove('progress-bar-animated');
         progressBar.classList.add('bg-danger');
-        
         setTimeout(() => {
             modal.hide();
             progressBar.classList.remove('bg-danger');
@@ -1411,30 +1202,23 @@ async function exportDatabaseBackup() {
 async function importDatabaseBackup(input) {
     const file = input.files[0];
     if (!file) return;
-    
     if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
         alert('❌ File harus berformat .json');
         input.value = '';
         return;
     }
-    
     try {
         const content = await file.text();
         const backupData = JSON.parse(content);
-        
         if (!backupData.meta || !backupData.data) {
             throw new Error('Format file backup tidak valid');
         }
-        
         document.getElementById('restoreFileName').innerText = file.name;
         document.getElementById('restoreFileDate').innerText = new Date(backupData.meta.exportedAt).toLocaleString('id-ID');
         document.getElementById('restoreFileCount').innerText = backupData.stats?.totalTransaksi || backupData.data.transaksi?.length || 0;
-        
         pendingRestoreData = backupData;
-        
         const modal = new bootstrap.Modal(document.getElementById('confirmRestoreModal'));
         modal.show();
-        
     } catch (error) {
         alert('❌ Gagal membaca file backup:\n' + error.message);
     } finally {
@@ -1447,124 +1231,73 @@ async function confirmRestore() {
         alert('❌ Tidak ada data backup yang siap direstore');
         return;
     }
-    
     const confirmModal = bootstrap.Modal.getInstance(document.getElementById('confirmRestoreModal'));
     confirmModal.hide();
-    
     const progressModal = new bootstrap.Modal(document.getElementById('progressModal'));
     const title = document.getElementById('progressModalTitle');
     const message = document.getElementById('progressModalMessage');
     const progressBar = document.getElementById('progressBar');
     const progressDetail = document.getElementById('progressDetail');
-    
     title.innerText = '🔄 Restore Database';
     message.innerText = 'Memulai proses restore...';
     progressBar.style.width = '0%';
     progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated';
     progressDetail.innerText = '';
     progressModal.show();
-    
     try {
         const { data: backupData } = pendingRestoreData;
         let successCount = 0, skipCount = 0, errorCount = 0;
-        
-        // Restore kategori terlebih dahulu
         if (backupData.kategori && backupData.kategori.length > 0) {
             progressBar.style.width = '20%';
             message.innerText = 'Memulihkan kategori...';
-            
             const existingKategori = await getExistingKategori();
-            
             for (let i = 0; i < backupData.kategori.length; i++) {
                 const kat = backupData.kategori[i];
                 progressDetail.innerText = `Kategori ${i+1}/${backupData.kategori.length}: ${kat.nama_kategori}`;
-                
-                // Skip jika sudah ada
-                if (existingKategori.includes(kat.nama_kategori)) { 
-                    skipCount++; 
-                    continue; 
-                }
-                
-                // Insert tanpa ID untuk menghindari duplicate
-                const { error } = await supabaseClient
-                    .from('kategori')
-                    .insert([{ nama_kategori: kat.nama_kategori }]);
-                
+                if (existingKategori.includes(kat.nama_kategori)) { skipCount++; continue; }
+                const { error } = await supabaseClient.from('kategori').insert([{ nama_kategori: kat.nama_kategori }]);
                 if (error) { errorCount++; } else { successCount++; }
-                
                 const progress = 20 + (i / backupData.kategori.length) * 20;
                 progressBar.style.width = `${progress}%`;
-                
                 if (i % 10 === 0) await new Promise(r => setTimeout(r, 100));
             }
         }
-        
-        // Refresh category list
         await fetchCategoriesFromDB();
-        
-        // Restore transaksi
         if (backupData.transaksi && backupData.transaksi.length > 0) {
             progressBar.style.width = '40%';
             message.innerText = 'Memulihkan transaksi...';
-            
             const existingIds = await getExistingTransaksiIds();
-            
             for (let i = 0; i < backupData.transaksi.length; i++) {
                 const trx = backupData.transaksi[i];
                 progressDetail.innerText = `Transaksi ${i+1}/${backupData.transaksi.length}: ${trx.tanggal}`;
-                
-                // Skip jika ID sudah ada
-                if (existingIds.includes(trx.id)) { 
-                    skipCount++; 
-                    continue; 
-                }
-                
-                // Insert tanpa specify ID - biarkan database auto-generate
-                const { error } = await supabaseClient
-                    .from('transaksi')
-                    .insert([{
-                        tanggal: trx.tanggal,
-                        jenis: trx.jenis,
-                        kategori: trx.kategori,
-                        jumlah: trx.jumlah,
-                        keterangan: trx.keterangan || null
-                    }]);
-                
-                if (error) { 
-                    // Handle duplicate key error
-                    if (error.message.includes('duplicate key')) {
-                        skipCount++;
-                    } else {
-                        errorCount++; 
-                    }
-                } else { 
-                    successCount++; 
-                }
-                
+                if (existingIds.includes(trx.id)) { skipCount++; continue; }
+                const { error } = await supabaseClient.from('transaksi').insert([{
+                    tanggal: trx.tanggal,
+                    jenis: trx.jenis,
+                    kategori: trx.kategori,
+                    jumlah: trx.jumlah,
+                    keterangan: trx.keterangan || null
+                }]);
+                if (error) { errorCount++; } else { successCount++; }
                 const progress = 40 + (i / backupData.transaksi.length) * 55;
                 progressBar.style.width = `${progress}%`;
-                
                 if (i % 20 === 0) await new Promise(r => setTimeout(r, 150));
             }
         }
-        
         progressBar.style.width = '100%';
         message.innerText = '✅ Restore selesai!';
         progressDetail.innerText = `Berhasil: ${successCount}, Dilewati: ${skipCount}, Error: ${errorCount}`;
-        
         setTimeout(async () => {
             progressModal.hide();
             pendingRestoreData = null;
             await loadData();
             alert(`🎉 Restore Selesai!\n\n✅ Data berhasil: ${successCount}\n⏭️ Dilewati (duplikat): ${skipCount}\n❌ Gagal: ${errorCount}\n\n🔄 Dashboard telah diperbarui.`);
         }, 800);
-        
     } catch (error) {
         message.innerText = '❌ Restore gagal';
         progressDetail.innerText = error.message;
         progressBar.classList.remove('progress-bar-animated');
         progressBar.classList.add('bg-danger');
-        
         setTimeout(() => {
             progressModal.hide();
             progressBar.classList.remove('bg-danger');
@@ -1596,13 +1329,11 @@ document.addEventListener('DOMContentLoaded', function() {
     initCategoryLookup();
     initCurrencyInput();
     loadData();
-    
     window.addEventListener('resize', () => {
         setTimeout(() => adjustAllBalanceCards(), 100);
         if (chart) { chart.resize(); }
         if (chartKategori) { chartKategori.resize(); }
     });
-    
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.category-container')) {
             const sug = document.getElementById('kategoriSuggestions');
@@ -1611,4 +1342,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-console.log("💰 Dashboard loaded with Duplicate Key Fix!");
+console.log("💰 Dashboard loaded with Comparison Feature!");

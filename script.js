@@ -228,6 +228,8 @@ async function addNewCategory(category) {
 // ==================== CURRENCY INPUT HANDLER ====================
 function initCurrencyInput() {
     const input = document.getElementById('jumlah');
+    
+    // Validasi pencegah error: Jika elemen tidak ditemukan, hentikan fungsi diam-diam
     if (!input) return;
 
     input.addEventListener('input', function() {

@@ -320,8 +320,6 @@ async function loadData() {
         const totalM = resMasuk.data?.reduce((sum, item) => sum + item.jumlah, 0) || 0;
         const totalK = resKeluar.data?.reduce((sum, item) => sum + item.jumlah, 0) || 0;
         
-        const filterBulanName = filterBulan ? document.getElementById("filterBulan").options[document.getElementById("filterBulan").selectedIndex].text : "Semua Bulan";
-        
         const mEl = document.getElementById("totalMasuk");
         const kEl = document.getElementById("totalKeluar");
         const eEl = document.getElementById("endingBalance");
